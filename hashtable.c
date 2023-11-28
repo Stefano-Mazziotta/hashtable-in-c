@@ -1,32 +1,30 @@
-// https://www.youtube.com/watch?v=2Ti5yvumFTU
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_NAME 256
+#define MAX_NAME_LENGTH 256
 #define TABLE_SIZE 10
 //#define DELETED_NODE (person*)(0xFFFFFFFFFFFFFFFFUL)
 
-typedef struct {
-    char name[MAX_NAME];
+typedef struct Person{
+    char name[MAX_NAME_LENGTH];
     int age;
     // add ... other stuff later, maybe
-    struct person *next;
+    struct Person *next;
 } person;
 
 person * hash_table[TABLE_SIZE];
 
 // El rango de un int va de -2.147.483.648 a 2.147.483.647.
 // El rango de un unsigned int va de 0 to 4.294.967.295
-unsigned int hash(char *name){
-    int length = strnlen(name, MAX_NAME);
-    unsigned int hash_value = 0;
+size_t hash(char *name){
+    size_t length = strnlen(name, MAX_NAME_LENGTH);
+    size_t hash_value = 0;
     for(int i = 0; i < length; i++){
-        hash_value += name[i];
-        hash_value = (hash_value * name[i]) % TABLE_SIZE;
+        hash_value = (hash_value + name[i]) * 31;
+        hash_value = hash_value % TABLE_SIZE;
     }
     return hash_value;
 }
@@ -36,7 +34,7 @@ bool init_hash_table(){
     {
         hash_table[i] = NULL;
     }
-    // table is empty
+    return true;
 }
 
 void print_table(){
@@ -73,7 +71,7 @@ person *hash_table_lookup(char *name){
     int index = hash(name);
     person *tmp = hash_table[index];
 
-    while (tmp != NULL && strncmp(tmp->name, name, MAX_NAME) != 0)
+    while (tmp != NULL && strncmp(tmp->name, name, MAX_NAME_LENGTH) != 0)
     {
         tmp = tmp->next;
     }
@@ -86,13 +84,13 @@ person *hash_table_delete(char *name){
 
     person *tmp = hash_table[index];
     person *prev = NULL;
-    while (tmp != NULL && strncmp(tmp->name, name, MAX_NAME) != 0)
+    while (tmp != NULL && strncmp(tmp->name, name, MAX_NAME_LENGTH) != 0)
     {
         prev = tmp;
         tmp = tmp->next;
     }
 
-    if(tmp = NULL) return NULL;
+    if(tmp == NULL) return NULL;
     if(prev == NULL) {
         // deleting the head
         hash_table[index] = tmp->next;
@@ -121,23 +119,23 @@ int main(){
 
     print_table();    
 
-    // person *tmp = hash_table_lookup("Sofia");
-    // if(tmp == NULL){
-    //     printf("Not found!\n");
-    // } else {
-    //     printf("Found %s.\n", tmp->name);
-    // }
+    person *tmp = hash_table_lookup("Sofia");
+    if(tmp == NULL){
+        printf("Not found!\n");
+    } else {
+        printf("Found %s.\n", tmp->name);
+    }
 
-    // hash_table_delete("Sofia");
-    // tmp = hash_table_lookup("Sofia");
+    hash_table_delete("Sofia");
+    tmp = hash_table_lookup("Sofia");
 
-    // if(tmp == NULL){
-    //     printf("Not found!\n");
-    // } else {
-    //     printf("Found %s.\n", tmp->name);
-    // }
+    if(tmp == NULL){
+        printf("Not found!\n");
+    } else {
+        printf("Found %s.\n", tmp->name);
+    }
 
-    // print_table();
+    print_table();
 
     return 0;
 }
