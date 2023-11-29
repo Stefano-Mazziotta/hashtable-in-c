@@ -20,13 +20,14 @@ This is a basic implementation of a hash table in C programming language. The co
 
    ```bash
    cd hash-table-c
-   gcc main.c -o hash_table
+   gcc -o hashtable main.c hash_table.c
+
    ```
 
 3. Run the executable:
 
    ```bash
-   ./hash_table
+   ./hashtable
    ```
 
 ## Contributing
