@@ -2,9 +2,6 @@
 
 person** hash_table;
 
-// El rango de un int va de -2.147.483.648 a 2.147.483.647.
-// El rango de un unsigned int va de 0 to 4.294.967.295
-// El rango de un size_t int va de 0 to 4.294.967.295
 size_t hash(char *name){
     size_t length = strnlen(name, MAX_NAME_LENGTH);
     size_t hash_value = 0;
@@ -31,20 +28,23 @@ bool init_hash_table(){
     return true;
 }
 // free dynamic memory (heap)
-void free_hash_table() {    
-    
+void free_hash_table() {
+    if (hash_table == NULL) {
+        return;
+    }
+
     for (int i = 0; i < TABLE_SIZE; i++) {
-    
         person* currentPerson = hash_table[i];
-    
         while (currentPerson != NULL) {
             person* next = currentPerson->next;
             free(currentPerson);
             currentPerson = next;
         }
+        hash_table[i] = NULL;
     }
 
     free(hash_table);
+    hash_table = NULL;
 }
 
 void print_table(){
@@ -74,14 +74,28 @@ void print_table(){
     printf("End\n");
 }
 
-bool hash_table_insert(person *person){
-    
-    if(person == NULL) return false;
+bool hash_table_insert(person *inputPerson) {
+    if (inputPerson == NULL) {
+        return false;
+    }
 
-    int index = hash(person->name);
-    person->next = hash_table[index];
-    hash_table[index] = person;
-    
+    // Allocate memory for the new person
+    person* newPerson = (person*)malloc(sizeof(person));
+    if (newPerson == NULL) {
+        return false;
+    }
+
+    // Copy the input data to the new person
+    strncpy(newPerson->name, inputPerson->name, MAX_NAME_LENGTH);
+    newPerson->age = inputPerson->age;
+    newPerson->next = NULL;
+
+    int index = hash(newPerson->name);
+
+    // Insert the new person at the beginning of the linked list
+    newPerson->next = hash_table[index];
+    hash_table[index] = newPerson;
+
     return true;
 }
 
