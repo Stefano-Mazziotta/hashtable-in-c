@@ -8,7 +8,7 @@ person** hash_table;
 size_t hash(char *name){
     size_t length = strnlen(name, MAX_NAME_LENGTH);
     size_t hash_value = 0;
-    for(int i = 0; i < length; i++){
+    for(size_t i = 0; i < length; i++){
         hash_value = (hash_value + name[i]) * 31;
         hash_value = hash_value % TABLE_SIZE;
     }
