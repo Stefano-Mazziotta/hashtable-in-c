@@ -16,18 +16,16 @@ This is a basic implementation of a hash table in C programming language. The co
    git clone https://github.com/stefano-mazziotta/hash-table-c.git
    ```
 
-2. Compile the code:
+2. Compile the code using the provided makefile::
 
    ```bash
-   cd hash-table-c
-   gcc -o hashtable main.c hash_table.c
-
+   make main
    ```
 
 3. Run the executable:
 
    ```bash
-   ./hashtable
+   ./_output/hash_table
    ```
 
 ## Contributing
